@@ -11,6 +11,7 @@ import math
 from torch.utils.tensorboard import SummaryWriter
 from torchvision import transforms
 from torch.utils.data import Dataset
+from prepocessing import *
 
 def AppendtoFrame():
     list = []
@@ -18,11 +19,12 @@ def AppendtoFrame():
         bmp_list = json.load(f)
     for i in range(len(bmp_list)):
         
-        list.append([id, '.\\data\\imgs\\.{}'.format(bmp_list[i]), '.\\data\\masks\\.{}'.format(bmp_list[i])])
+        list.append([id, '.\\data\\imgs\\{}'.format(bmp_list[i]), '.\\data\\masks\\{}'.format(bmp_list[i])])
     
     print("list length: ", len(list))
     frame = None
     frame = pd.DataFrame(list, columns = ['id', 'img_path', 'mask_path'])
+    print(frame)
     return frame
 
 class TeethDataset(Dataset):
@@ -35,14 +37,14 @@ class TeethDataset(Dataset):
     
     def __getitem__(self,idx):
         img_name = os.path.join(self.frame.iloc[idx]['img_path'])
-        image = cv2.imread(img_name)
+        image = cv2.imread(img_name, cv2.IMREAD_GRAYSCALE)
         mask_name = os.path.join(self.frame.iloc[idx]['mask_path'])
-        mask = cv2.imread(mask_name)
+        mask = cv2.imread(mask_name, cv2.IMREAD_GRAYSCALE)
         sample = {'image': image, 'mask': mask}
 
         if self.transform:
             sample = self.transform(sample)
-
+        
         return sample
 
 class ToPILImage(object):

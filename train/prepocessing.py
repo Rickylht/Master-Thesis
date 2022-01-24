@@ -31,9 +31,9 @@ def create_mask(imgpath, jsonpath, maskpath):
             cv2.fillPoly(mask, [tooth_point_list], (255,255,255))
             cv2.imwrite(maskpath, mask)
 
-#create_mask(".\data\imgs\sample02.bmp", ".\data\jsons\sample02.json", ".\data\masks\sample02.bmp")
+#create_mask(".\data\imgs\sample0{}.bmp".format(j), ".\data\jsons\sample0{}.json".format(j), ".\data\masks\sample0{}.bmp".format(j))
 
-def mask_on_image(imgsrcpath, maskpath,maskedImgpath):
+def mask_on_image(imgsrcpath, maskpath, maskedImgpath):
     '''
     put single mask on single image
     Args:
@@ -48,7 +48,7 @@ def mask_on_image(imgsrcpath, maskpath,maskedImgpath):
     maskedImg = cv2.bitwise_and(srcImg, srcImg, mask = maskImg)
     cv2.imwrite(maskedImgpath, maskedImg)
 
-#mask_on_image(".\data\imgs\sample02.bmp", "123.bmp", ".\data\masks\sample02.bmp")
+#mask_on_image(".\data\imgs\sample02.bmp", ".\data\masks\sample02.bmp", "masked_sample.bmp")
 
 def create_all_masks():
     '''create masks for all images and save'''

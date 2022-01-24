@@ -4,7 +4,6 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
-
 class DoubleConv(nn.Module):
     """(convolution => [BN] => ReLU) * 2"""
 
@@ -39,7 +38,7 @@ class Down(nn.Module):
         return self.maxpool_conv(x)
 
 
-class Up(nn.Module):
+class Up(nn.Module): 
     """Upscaling then double conv"""
 
     def __init__(self, in_channels, out_channels, bilinear=True):
