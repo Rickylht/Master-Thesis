@@ -1,3 +1,4 @@
 *.pth
 img_path.json
+data/
 
