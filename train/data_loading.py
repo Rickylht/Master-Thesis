@@ -15,7 +15,7 @@ from prepocessing import *
 
 def AppendtoFrame():
     list = []
-    with open('img_path.json', 'r') as f:
+    with open('img_sample_path.json', 'r') as f:
         bmp_list = json.load(f)
     for i in range(len(bmp_list)):
         
@@ -111,28 +111,61 @@ class Contrast_Enhance(object):
         return {'image': unsharp_image, 'mask': mask}
 
 class Random_Rotation(object):
+
     def __init__(self):
-        self.transform = transforms.RandomRotation(degrees = (0, 180))
+        self.angle = 0.0
     def __call__(self, sample):
+        seed = int(torch.rand(1) * 120)
+        self.angle = float(seed - 50)
         image, mask = sample['image'], sample['mask']
+        # grab the dimensions of the image and then determine the
+        # centre
+        h, w = image.shape[:2]
+        (cX, cY) = (w // 2, h // 2)
+        # grab the rotation matrix (applying the negative of the
+        # angle to rotate clockwise), then grab the sine and cosine
+        # (i.e., the rotation components of the matrix)
+        M = cv2.getRotationMatrix2D((cX, cY), self.angle, 1.0)
 
-        return {'image': self.transform(image),
-                'mask': self.transform(mask)}
+        cos = np.abs(M[0, 0])
+        sin = np.abs(M[0, 1])
 
-class Random_HorizontalFlip(object):
+        # compute the new bounding dimensions of the image
+        nW = int((h * sin) + (w * cos))
+        nH = int((h * cos) + (w * sin))
+
+        # adjust the rotation matrix to take into account translation
+        M[0, 2] += (nW / 2) - cX
+        M[1, 2] += (nH / 2) - cY
+        # perform the actual rotation and return the image
+        image = cv2.warpAffine(image, M, (nW, nH))
+        mask = cv2.warpAffine(mask, M, (nW, nH))
+        
+        #    image = cv2.resize(image, (w,h))
+        return {'image': image, 'mask': mask}
+
+class Random_Shift(object):
     def __init__(self):
-        self.transform = transforms.RandomHorizontalFlip(p = 0.5)
+        self.shift = [0, 0]
+
     def __call__(self, sample):
+        seed = int(torch.rand(1) * 100)
+        rng = np.random.default_rng(seed)
+        self.shift[0] = rng.integers(low=-100, high=100, size=1)
+        self.shift[1] = rng.integers(low=-100, high=100, size=1)
         image, mask = sample['image'], sample['mask']
+        # Translation matrix
+        M = np.float32([[1, 0, self.shift[0]], [0, 1, self.shift[1]]])
 
-        return {'image': self.transform(image),
-                'mask': self.transform(mask)}
+        try:
+            rows, cols = image.shape[:2]
 
-class Random_Perspective(object):
-    def __init__(self):
-        self.transform = transforms.RandomPerspective()
-    def __call__(self, sample):
-        image, mask = sample['image'], sample['mask']
+            # warpAffine does appropriate shifting given the
+            # translation matrix.
+            image = cv2.warpAffine(image, M, (cols, rows))
+            mask = cv2.warpAffine(mask, M, (cols, rows))
 
-        return {'image': self.transform(image),
-                'mask': self.transform(mask)}
+            return {'image': image, 'mask': mask}
+
+        except IOError:
+            print('Error while reading files !!!')

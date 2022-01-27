@@ -17,21 +17,21 @@ frame = AppendtoFrame()
 
 
 def cross_validation_training():
-    '''use cross-validation to get multiple models'''
-    transform_objs = transforms.Compose([ToPILImage(), Rescale((400, 500)), Random_Perspective(), Random_Rotation(),ToTensor()])
+    '''use cross-validation to get multiple weights'''
+    transform_objs = transforms.Compose([Random_Shift(), Random_Rotation(), ToPILImage(), Rescale((400, 500)),ToTensor()])
     transform_val = transforms.Compose([ToPILImage(), Rescale((400, 500)), ToTensor()])
 
-    train_val, test = train_test_split(frame, test_size=0.2, random_state=42)
-    train, val = train_test_split(train_val, test_size=0.2, random_state=42)
+    #train_val, test = train_test_split(frame, test_size=0.2, random_state=42)
+    #train, val = train_test_split(train_val, test_size=0.2, random_state=42)
 
-    transformed_dataset_train = TeethDataset(frame = train, transform = transform_objs)
-    transformed_dataset_val = TeethDataset(frame = val, transform = transform_val)
-    transformed_dataset_test = TeethDataset(frame = test, transform = transform_val)
+    transformed_dataset_train = TeethDataset(frame = frame, transform = transform_objs)
+    #transformed_dataset_val = TeethDataset(frame = val, transform = transform_val)
+    #transformed_dataset_test = TeethDataset(frame = test, transform = transform_val)
 
     #if out memory, change batch_size smaller
-    dataloader_train = DataLoader(transformed_dataset_train, batch_size=1, shuffle=True, num_workers=0)
-    dataloader_val = DataLoader(transformed_dataset_val, batch_size=1, shuffle=True, num_workers=0)
-    dataloader_test = DataLoader(transformed_dataset_test, batch_size=1, shuffle=True, num_workers=0)
+    dataloader_train = DataLoader(transformed_dataset_train, batch_size=2, shuffle=True, num_workers=0)
+    #dataloader_val = DataLoader(transformed_dataset_val, batch_size=1, shuffle=True, num_workers=0)
+    #dataloader_test = DataLoader(transformed_dataset_test, batch_size=1, shuffle=True, num_workers=0)
 
     net = UNet(n_channels=1, n_classes=1).to(device)
 
@@ -45,7 +45,7 @@ def cross_validation_training():
     loss = torch.nn.MSELoss()
 
     epoch = 1
-    while epoch <= 50:
+    while epoch <= 25:
         for i, sample in enumerate(dataloader_train):
             image, mask = sample['image'].to(device), sample['mask'].to(device)
 
@@ -59,8 +59,8 @@ def cross_validation_training():
             #print train loss every 5 times
             if i%5 == 0:
                 print(f'{epoch}-{i}-train_loss====>>{train_loss.item()}')
-            
-            #save a weights every 50 times
+
+            #save a weights every 20 times
             if i%50 == 0:
                 torch.save(net.state_dict(),weight_path)
             

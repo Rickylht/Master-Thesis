@@ -9,10 +9,11 @@ from prepocessing import show_img
 from unet import UNet
 
 def test_single_image(path = 'sample.bmp'):
+
     '''predicts a single image'''
     
     net = UNet(n_channels=1, n_classes=1).cuda()
-
+    
     weights = 'unet.pth'
 
     if os.path.exists(weights):
@@ -22,6 +23,15 @@ def test_single_image(path = 'sample.bmp'):
             print('weights not loaded')
     
     image = cv2.imread(path, cv2.IMREAD_GRAYSCALE)
+
+    #image rotation test
+    '''
+    (h, w) = image.shape[:2]
+    (cX, cY) = (w // 2, h // 2)
+    M = cv2.getRotationMatrix2D((cX, cY), 45, 1.0)
+    image = cv2.warpAffine(image, M, (w, h))
+    '''
+
     transform = transforms.Compose([transforms.ToPILImage(), transforms.Resize((400,500)), transforms.ToTensor()])
 
     input = transform(image).cuda()
@@ -33,7 +43,7 @@ def test_single_image(path = 'sample.bmp'):
     show_img(img)
     print("prediction succesful")
 
-#test_single_image()
+test_single_image()
     
 
 

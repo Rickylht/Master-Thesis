@@ -5,6 +5,7 @@ import os
 import matplotlib.pyplot as plt
 
 def show_img(img):
+    
     cv2.imshow("img", img)
     cv2.waitKey(0)
     cv2.destroyAllWindows()
@@ -12,12 +13,12 @@ def show_img(img):
 def create_mask(imgpath, jsonpath, maskpath):
     '''
     create single mask for one image and save
-    Arg:
-        imgpath: path of image
-        jsonpath: path of labelled json file
-        maskpath: path of created mask to save
-    Return: 
-        None
+        Arg:
+            imgpath: path of image
+            jsonpath: path of labelled json file
+            maskpath: path of created mask to save
+        Return: 
+            None
     '''
     with open(jsonpath, "r") as f:
         data = f.read()
@@ -31,24 +32,24 @@ def create_mask(imgpath, jsonpath, maskpath):
             cv2.fillPoly(mask, [tooth_point_list], (255,255,255))
             cv2.imwrite(maskpath, mask)
 
-#create_mask(".\data\imgs\sample0{}.bmp".format(j), ".\data\jsons\sample0{}.json".format(j), ".\data\masks\sample0{}.bmp".format(j))
+#create_mask(".\data\imgs\sample01.bmp", ".\data\jsons\sample01.json", ".\data\masks\sample01.bmp")
 
 def mask_on_image(imgsrcpath, maskpath, maskedImgpath):
     '''
     put single mask on single image
-    Args:
-        imgsrcpath: path of original img
-        maskpath: path of mask
-        maskedImgpath: path of created masked image to save
-    Return:
-        None
+        Args:
+            imgsrcpath: path of original img
+            maskpath: path of mask
+            maskedImgpath: path of created masked image to save
+        Return:
+            None
     '''
     srcImg = cv2.imread(imgsrcpath, cv2.IMREAD_GRAYSCALE)
     maskImg = cv2.imread(maskpath, cv2.IMREAD_GRAYSCALE)
     maskedImg = cv2.bitwise_and(srcImg, srcImg, mask = maskImg)
     cv2.imwrite(maskedImgpath, maskedImg)
 
-#mask_on_image(".\data\imgs\sample02.bmp", ".\data\masks\sample02.bmp", "masked_sample.bmp")
+#mask_on_image(".\data\imgs\sample01.bmp", ".\data\masks\sample01.bmp", "masked_sample.bmp")
 
 def create_all_masks():
     '''create masks for all images and save'''
@@ -69,9 +70,9 @@ def check_histogram(imgpath):
 
 def prepocessing(rawpath, imgpath):
     '''single image processing before training
-    Args:
-        rawpath: path of raw image
-        imgpath: path of image to save
+        Args:
+            rawpath: path of raw image
+            imgpath: path of image to save
     '''
     #change to grey sacle
     raw = cv2.imread(rawpath, cv2.IMREAD_GRAYSCALE)
