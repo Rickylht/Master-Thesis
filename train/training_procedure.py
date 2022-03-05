@@ -1,3 +1,4 @@
+import argparse
 from pickletools import optimize
 from data_loading import *
 import torchvision.models as models
@@ -18,7 +19,9 @@ frame = AppendtoFrame()
 
 def cross_validation_training():
     '''use cross-validation to get multiple weights'''
-    transform_objs = transforms.Compose([Random_Shift(), Random_Rotation(), ToPILImage(), Rescale((400, 500)),ToTensor()])
+    print("Total sample number: ", len(frame))
+
+    transform_objs = transforms.Compose([Random_Shift(), Random_Rotation(), ToPILImage(), ColorJitter(0.5, 0.5, 0.5, 0.3), Rescale((400, 500)), ToTensor(), Normalize()])
     transform_val = transforms.Compose([ToPILImage(), Rescale((400, 500)), ToTensor()])
 
     #train_val, test = train_test_split(frame, test_size=0.2, random_state=42)
@@ -29,10 +32,11 @@ def cross_validation_training():
     #transformed_dataset_test = TeethDataset(frame = test, transform = transform_val)
 
     #if out memory, change batch_size smaller
-    dataloader_train = DataLoader(transformed_dataset_train, batch_size=2, shuffle=True, num_workers=0)
+    dataloader_train = DataLoader(transformed_dataset_train, batch_size=1, shuffle=True, num_workers=0)
     #dataloader_val = DataLoader(transformed_dataset_val, batch_size=1, shuffle=True, num_workers=0)
     #dataloader_test = DataLoader(transformed_dataset_test, batch_size=1, shuffle=True, num_workers=0)
 
+    #greyscale, channels = 1
     net = UNet(n_channels=1, n_classes=1).to(device)
 
     if os.path.exists(weight_path):
@@ -43,9 +47,9 @@ def cross_validation_training():
     
     opt = torch.optim.Adam(net.parameters())
     loss = torch.nn.MSELoss()
-
+    
     epoch = 1
-    while epoch <= 25:
+    while epoch <= 50:
         for i, sample in enumerate(dataloader_train):
             image, mask = sample['image'].to(device), sample['mask'].to(device)
 
@@ -73,13 +77,17 @@ def cross_validation_training():
 
         epoch += 1
 
-cross_validation_training()
 
 def train_best_model():
     '''decide best model and finally train again'''
     pass
 
-def get_results(path):
-    '''give path, predict, get result'''
-    pass
+
+
+if __name__ == '__main__':
+    print('Training start')
+    cross_validation_training()
+    
+    
+
 

@@ -1,49 +1,54 @@
 import os
+import shutil
 import torch
 import cv2
 from torchvision import transforms
 import matplotlib.pyplot as plt
 from torchvision.utils import save_image
-
-from prepocessing import show_img
 from unet import UNet
+import numpy as np
 
-def test_single_image(path = 'sample.bmp'):
+def test_single_image(path = '.\\data\\imgs\\010_830_v.bmp'):
 
-    '''predicts a single image'''
-    
+    '''predict a single image'''
+
+    shutil.copy(path, '.\\prediction_workplace\\origin.bmp')
+
     net = UNet(n_channels=1, n_classes=1).cuda()
     
     weights = 'unet.pth'
 
     if os.path.exists(weights):
             net.load_state_dict(torch.load(weights))
-            print('weights successfully loaded')
+            #print('weights successfully loaded')
     else:
             print('weights not loaded')
+            return
     
     image = cv2.imread(path, cv2.IMREAD_GRAYSCALE)
+    cv2.imshow("img", image)
+    cv2.waitKey(0)
+    cv2.destroyAllWindows()
 
-    #image rotation test
-    '''
-    (h, w) = image.shape[:2]
-    (cX, cY) = (w // 2, h // 2)
-    M = cv2.getRotationMatrix2D((cX, cY), 45, 1.0)
-    image = cv2.warpAffine(image, M, (w, h))
-    '''
+    h, w = image.shape[0], image.shape[1]
 
     transform = transforms.Compose([transforms.ToPILImage(), transforms.Resize((400,500)), transforms.ToTensor()])
 
     input = transform(image).cuda()
     input = torch.unsqueeze(input, dim = 0)
     output = net(input)
-    save_image(output, 'prediction.bmp')
+    save_image(output, '.\\prediction_workplace\\prediction.bmp')
 
-    img = cv2.imread('prediction.bmp')
-    show_img(img)
-    print("prediction succesful")
-
-test_single_image()
+    mask = cv2.imread('.\\prediction_workplace\\prediction.bmp')
+    mask = cv2.resize(mask,(w, h))
+    cv2.imshow("mask", mask)
+    cv2.waitKey(0)
+    cv2.destroyAllWindows()
+    cv2.imwrite('.\\prediction_workplace\\prediction.bmp', mask)
     
+    print("prediction succesful")
+    
+    return
 
-
+if __name__ == '__main__':
+    test_single_image()

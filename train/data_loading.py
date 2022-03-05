@@ -8,23 +8,50 @@ import os
 from torchvision import transforms, utils
 import time
 import math
+import pymysql
 from torch.utils.tensorboard import SummaryWriter
 from torchvision import transforms
 from torch.utils.data import Dataset
-from prepocessing import *
+
+def get_path_list(path):
+    list = []
+
+    for root, ds, fs in os.walk(path):
+        for f in fs:
+            fullname = os.path.join(root, f)
+            list.append(fullname)
+    
+    return list
+            
 
 def AppendtoFrame():
-    list = []
-    with open('img_sample_path.json', 'r') as f:
-        bmp_list = json.load(f)
-    for i in range(len(bmp_list)):
-        
-        list.append([id, '.\\data\\imgs\\{}'.format(bmp_list[i]), '.\\data\\masks\\{}'.format(bmp_list[i])])
     
-    print("list length: ", len(list))
+    '''
+    connection = pymysql.connect(host = 'localhost', user = "root", password = '1989', db = 'decay_away', autocommit= True)
+    cursor = connection.cursor()
+    sql = 'select * from teeth '
+    try:
+        cursor.execute(sql)
+        results = cursor.fetchall()
+        for row in results:
+            id = row[0]
+            file_path = row[7]
+            list.append([id, '.\\data\\imgs\\{}'.format(file_path), '.\\data\\masks\\{}'.format(file_path)])
+    except:
+        print ("Error: unable to fetch data")
+    connection.close()
+
+    '''
+    
+    list = []
+    image_path_list = get_path_list(".\\teeth_dataset\\image")
+    for i in range(len(image_path_list)):
+        
+        list.append([id, image_path_list[i], image_path_list[i].replace('image', 'mask')])
+      
     frame = None
     frame = pd.DataFrame(list, columns = ['id', 'img_path', 'mask_path'])
-    print(frame)
+    
     return frame
 
 class TeethDataset(Dataset):
@@ -100,16 +127,6 @@ class ToTensor(object):
         return {'image': self.transform(image),
                 'mask': self.transform(mask)}
 
-class Contrast_Enhance(object):
-    def __init__(self, alpha, beta):
-        self.alpha = alpha
-        self.beta = beta
-    def __call__(self, sample):
-        image, mask = sample['image'], sample['mask']
-        gaussian_3 = cv2.GaussianBlur(image, (0, 0), 2.0)
-        unsharp_image = cv2.addWeighted(image, self.alpha, gaussian_3, self.beta, 0, image)
-        return {'image': unsharp_image, 'mask': mask}
-
 class Random_Rotation(object):
 
     def __init__(self):
@@ -169,3 +186,17 @@ class Random_Shift(object):
 
         except IOError:
             print('Error while reading files !!!')
+
+class ColorJitter(object):
+
+  def __init__(self, brightness=0, contrast=0, saturation=0, hue=0):
+    self.transform = transforms.ColorJitter(brightness=brightness, contrast=contrast, saturation=saturation, hue=hue)
+
+  def __call__(self, sample):
+    image, mask = sample['image'], sample['mask']
+
+    image = self.transform(image)
+    return {'image': image,  'mask': mask}
+
+if __name__ == '__main__':
+    get_path_list(".\\teeth_dataset\\image_2.23")
