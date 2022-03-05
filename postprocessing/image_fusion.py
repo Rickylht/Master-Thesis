@@ -67,6 +67,9 @@ def fusion_sift(imgpath1, imgpath2):
         return
 
 def fusion_contour(imgpath1, imgpath2):
+    '''
+        use template matching to find best overlay and do image fusion
+    '''
 
     img1 = cv2.imread(imgpath1,0) 
     img2 = cv2.imread(imgpath2,0) 
@@ -88,9 +91,6 @@ def fusion_contour(imgpath1, imgpath2):
     template = thresh_1[int(y+h/2-pow((pow(h/2,2) + pow(w/2,2)),0.5)):int(y+h/2+pow((pow(h/2,2) + pow(w/2,2)),0.5)), 
                         int(x+w/2-pow((pow(h/2,2) + pow(w/2,2)),0.5)):int(x+w/2+pow((pow(h/2,2) + pow(w/2,2)),0.5))] # as template
     
-    #plt.imshow(template, 'gray'),plt.show()
-    #plt.imshow(thresh1, 'gray'),plt.show()
-
     best_pro = 1
     best_degree = 0
     best_loc = (0,0)
@@ -109,7 +109,7 @@ def fusion_contour(imgpath1, imgpath2):
             best_degree = degree
             best_loc = min_loc
     
-    print("best_pro = ",  best_pro)
+    print("best probability = ",  best_pro)
     print("best degree = ", best_degree)
     print("best location = ", best_loc)
 
@@ -138,7 +138,6 @@ def fusion_contour(imgpath1, imgpath2):
                 y = srcH-refH
             destImg = np.array(largeImg)
             tmpSrcImg = destImg[y:y+refH,x:x+refW]
-            #print("tmpSrcImg shape = ", tmpSrcImg.shape)
 
             tmpImg = np.zeros((refH, refW))
             for y in range(refH):
@@ -152,8 +151,8 @@ def fusion_contour(imgpath1, imgpath2):
             #plt.imshow(tmpImg, 'gray'),plt.show()
             
             #tmpImg = cv2.addWeighted(tmpSrcImg, alpha, smallImg, beta,gamma)
-            #print("tmpImg shape = ", tmpImg.shape)
             #destImg[y:y + refH, x:x + refW] = tmpImg
+            
             return tmpImg
     
     img3 = addWeightedSmallImgToLargeImg(img2, 0.5, rotated, 0.5, 0.0, (best_loc))
@@ -163,5 +162,5 @@ def fusion_contour(imgpath1, imgpath2):
 
 if __name__ == '__main__':
     #fusion_sift(".\\data\\masked\\010_830_h.bmp", ".\\data\\masked\\010_830_v.bmp")
-    fusion_contour(".\\data\\masked\\009_830_h.bmp", ".\\data\\masked\\009_830_v.bmp")
+    fusion_contour(".\\data\\masked\\008_830_h.bmp", ".\\data\\masked\\008_830_v.bmp")
     pass 

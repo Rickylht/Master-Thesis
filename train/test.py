@@ -8,11 +8,15 @@ from torchvision.utils import save_image
 from unet import UNet
 import numpy as np
 
-def test_single_image(path = '.\\data\\imgs\\010_830_v.bmp'):
+def test_single_image(path = '.\\data\\imgs\\830_lingual.bmp'):
 
     '''predict a single image'''
 
     shutil.copy(path, '.\\prediction_workplace\\origin.bmp')
+    image = cv2.imread(path, cv2.IMREAD_GRAYSCALE)
+    cv2.imshow("img", image)
+    cv2.waitKey(0)
+    cv2.destroyAllWindows()
 
     net = UNet(n_channels=1, n_classes=1).cuda()
     
@@ -20,16 +24,10 @@ def test_single_image(path = '.\\data\\imgs\\010_830_v.bmp'):
 
     if os.path.exists(weights):
             net.load_state_dict(torch.load(weights))
-            #print('weights successfully loaded')
     else:
             print('weights not loaded')
             return
     
-    image = cv2.imread(path, cv2.IMREAD_GRAYSCALE)
-    cv2.imshow("img", image)
-    cv2.waitKey(0)
-    cv2.destroyAllWindows()
-
     h, w = image.shape[0], image.shape[1]
 
     transform = transforms.Compose([transforms.ToPILImage(), transforms.Resize((400,500)), transforms.ToTensor()])

@@ -111,7 +111,7 @@ def prepocessing(rawpath, imgpath):
 if __name__ == '__main__':
     #create_mask(".\\data\\imgs\\sample05.bmp", ".\\data\\jsons\\sample05.json", ".\\data\\masks\\sample05.bmp")
     #mask_on_image(".\\data\\imgs\\009_830_45.bmp", ".\\data\\masks\\009_830_45.bmp", ".\\data\\masked\\009_830_45.bmp")
-    #creat_all_mask()
-    check_histogram('prediction_image\masked.bmp')
+    creat_all_mask()
+    #check_histogram('prediction_image\masked.bmp')
     pass
     

@@ -23,7 +23,7 @@ def mask_threshold(maskpath = '.\\prediction_workplace\\prediction.bmp'):
 
     mask = cv2.imread(maskpath, cv2.IMREAD_GRAYSCALE)
     h, w = mask.shape[0], mask.shape[1]
-    etVal, threshold = cv2.threshold(mask, 30, 255, cv2.THRESH_BINARY)
+    etVal, threshold = cv2.threshold(mask, 50, 255, cv2.THRESH_BINARY)
 
     kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (3, 3))
 

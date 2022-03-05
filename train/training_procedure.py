@@ -15,7 +15,7 @@ data_path = '.\data'
 save_path = '.\data\save_image'
 frame = None
 frame = AppendtoFrame()
-
+print("decide: ", device)
 
 def cross_validation_training():
     '''use cross-validation to get multiple weights'''
@@ -49,7 +49,7 @@ def cross_validation_training():
     loss = torch.nn.MSELoss()
     
     epoch = 1
-    while epoch <= 50:
+    while epoch <= 25:
         for i, sample in enumerate(dataloader_train):
             image, mask = sample['image'].to(device), sample['mask'].to(device)
 
@@ -81,7 +81,6 @@ def cross_validation_training():
 def train_best_model():
     '''decide best model and finally train again'''
     pass
-
 
 
 if __name__ == '__main__':
