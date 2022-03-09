@@ -5,15 +5,9 @@ import os
 import matplotlib.pyplot as plt
 
 def mask_on_image(imgsrcpath, maskpath, maskedImgpath):
-    '''
-    put mask on image
-        Args:
-            imgsrcpath: path of original img
-            maskpath: path of mask
-            maskedImgpath: path of masked image to save
-        Return:
-            None
-    '''
+
+    '''put mask on image'''
+    
     srcImg = cv2.imread(imgsrcpath, cv2.IMREAD_GRAYSCALE)
     maskImg = cv2.imread(maskpath, cv2.IMREAD_GRAYSCALE)
     maskedImg = cv2.bitwise_and(srcImg, srcImg, mask = maskImg)

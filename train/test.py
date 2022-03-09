@@ -8,7 +8,7 @@ from torchvision.utils import save_image
 from unet import UNet
 import numpy as np
 
-def test_single_image(path = '.\\data\\imgs\\830_lingual.bmp'):
+def test_single_image(path = '.\\data\\imgs\\830_side_1.bmp'):
 
     '''predict a single image'''
 
