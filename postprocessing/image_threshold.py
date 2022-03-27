@@ -4,6 +4,11 @@ import json
 import os
 import matplotlib.pyplot as plt
 
+IMGSRCPATH = '.\\prediction_workplace\\origin.bmp'
+MASKPATH = '.\\prediction_workplace\\prediction_threshold.bmp'
+MASKEDIMGPATH = '.\\prediction_workplace\\masked.bmp'
+PREDICTIONPATH = '.\\prediction_workplace\\prediction.bmp'
+
 def mask_on_image(imgsrcpath, maskpath, maskedImgpath):
 
     '''put mask on image'''
@@ -13,11 +18,11 @@ def mask_on_image(imgsrcpath, maskpath, maskedImgpath):
     maskedImg = cv2.bitwise_and(srcImg, srcImg, mask = maskImg)
     cv2.imwrite(maskedImgpath, maskedImg)
 
-def mask_threshold(maskpath = '.\\prediction_workplace\\prediction.bmp'):
+def mask_threshold(prediction_path = PREDICTIONPATH):
 
-    mask = cv2.imread(maskpath, cv2.IMREAD_GRAYSCALE)
+    mask = cv2.imread(prediction_path, cv2.IMREAD_GRAYSCALE)
     h, w = mask.shape[0], mask.shape[1]
-    etVal, threshold = cv2.threshold(mask, 50, 255, cv2.THRESH_BINARY)
+    etVal, threshold = cv2.threshold(mask, 100, 255, cv2.THRESH_BINARY)
 
     kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (3, 3))
 
@@ -43,13 +48,14 @@ def mask_threshold(maskpath = '.\\prediction_workplace\\prediction.bmp'):
     cv2.imshow("mask", mask)
     cv2.waitKey(0)
 
-    cv2.imwrite('.\\prediction_workplace\\prediction_threshold.bmp', mask)
-    mask_on_image('.\\prediction_workplace\\origin.bmp', '.\\prediction_workplace\\prediction_threshold.bmp', '.\\prediction_workplace\\masked.bmp')
+    cv2.imwrite(MASKPATH, mask)
+    mask_on_image(IMGSRCPATH, MASKPATH, MASKEDIMGPATH)
 
-    masked = cv2.imread('.\\prediction_workplace\\masked.bmp')
+    masked = cv2.imread(MASKEDIMGPATH)
     cv2.imshow("mask", masked)
     cv2.waitKey(0)
     cv2.destroyAllWindows()
 
 if __name__ == '__main__':
     mask_threshold()
+

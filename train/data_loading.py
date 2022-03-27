@@ -44,7 +44,7 @@ def AppendtoFrame():
     '''
     
     list = []
-    image_path_list = get_path_list(".\\teeth_dataset\\image")
+    image_path_list = get_path_list(".\\teeth_dataset\\image\\830nm")
     for i in range(len(image_path_list)):
         
         list.append([id, image_path_list[i], image_path_list[i].replace('image', 'mask')])

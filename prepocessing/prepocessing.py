@@ -3,6 +3,7 @@ import numpy as np
 import json
 import os
 import matplotlib.pyplot as plt
+from PIL import Image
 
 def show_img(img):
     
@@ -107,11 +108,27 @@ def prepocessing(rawpath, imgpath):
     show_img(raw)
     cv2.imwrite(imgpath, raw)
 
+def check_rgb(imgpath = "35x45_foto.jpg"):
+    
+    img = cv2.imread(imgpath)
+    color = ('b', 'g', 'r')
+    histr = []
+    for i, col in enumerate(color):
+        histr = cv2.calcHist([img], [i], None, [256], [0, 256])
+        plt.plot(histr, color=col)
+        plt.xlim([0, 256])
+    
+    plt.xlabel("RGB value")
+    plt.ylabel("Pixel number")
+    plt.title('RGB histogram')
+    plt.show()
+
 
 if __name__ == '__main__':
     #create_mask(".\\data\\imgs\\sample05.bmp", ".\\data\\jsons\\sample05.json", ".\\data\\masks\\sample05.bmp")
     #mask_on_image(".\\data\\imgs\\009_830_45.bmp", ".\\data\\masks\\009_830_45.bmp", ".\\data\\masked\\009_830_45.bmp")
-    creat_all_mask()
+    #creat_all_mask()
     #check_histogram('prediction_image\masked.bmp')
+    check_rgb()
     pass
     

@@ -1,8 +1,6 @@
 *.pth
 img_path.json
 tooth_segmentation.py
-fusion_workplace/
-prediction_workplace/
 teeth_dataset/
 data/
 

@@ -8,7 +8,9 @@ from torchvision.utils import save_image
 from unet import UNet
 import numpy as np
 
-def test_single_image(path = '.\\data\\imgs\\830_side_1.bmp'):
+TESTPATH = '.\\data\\imgs\\002_830_gain04.bmp'
+
+def test_single_image(path = TESTPATH):
 
     '''predict a single image'''
 
@@ -30,12 +32,14 @@ def test_single_image(path = '.\\data\\imgs\\830_side_1.bmp'):
     
     h, w = image.shape[0], image.shape[1]
 
-    transform = transforms.Compose([transforms.ToPILImage(), transforms.Resize((400,500)), transforms.ToTensor()])
+    transform = transforms.Compose([transforms.ToPILImage(), transforms.Resize((400, 500)), transforms.ToTensor()])
 
-    input = transform(image).cuda()
-    input = torch.unsqueeze(input, dim = 0)
-    output = net(input)
-    save_image(output, '.\\prediction_workplace\\prediction.bmp')
+    net.eval()
+    with torch.no_grad():
+        input = transform(image).cuda()
+        input = torch.unsqueeze(input, dim = 0)
+        output = net(input)
+        save_image(output, '.\\prediction_workplace\\prediction.bmp')
 
     mask = cv2.imread('.\\prediction_workplace\\prediction.bmp')
     mask = cv2.resize(mask,(w, h))
