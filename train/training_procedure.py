@@ -24,6 +24,18 @@ frame = AppendtoFrame()
 def check_integrity():
     pass
 
+def CE_Loss(inputs, target, cls_weights, num_classes=21):
+    n, c, h, w = inputs.size()
+    nt, ht, wt = target.size()
+    if h != ht and w != wt:
+        inputs = torch.nn.functional.interpolate(inputs, size=(ht, wt), mode="bilinear", align_corners=True)
+
+    temp_inputs = inputs.transpose(1, 2).transpose(2, 3).contiguous().view(-1, c)
+    temp_target = target.view(-1)
+
+    CE_loss  = torch.nn.CrossEntropyLoss(weight=cls_weights, ignore_index=num_classes)(temp_inputs, temp_target)
+    return CE_loss
+
 def cross_validation_training():
     '''use cross-validation to get multiple weights'''
     print('------Training start------\n')
@@ -46,7 +58,7 @@ def cross_validation_training():
     dataloader_train = DataLoader(transformed_dataset_train, batch_size=2, shuffle=True, num_workers=0)
     dataloader_val = DataLoader(transformed_dataset_val, batch_size=2, shuffle=True, num_workers=0)
 
-    #greyscale -> channels = 1, predict one result -> classes = 1
+    #greyscale -> channels = 1, 2 classes
     net = UNet(n_channels=1, n_classes=1).to(device)
 
     '''
@@ -58,7 +70,7 @@ def cross_validation_training():
     '''
 
     opt = torch.optim.Adam(net.parameters())
-    loss = torch.nn.MSELoss()
+    loss = torch.nn.BCEWithLogitsLoss()
 
     count_train = 0
     count_eval = 0
@@ -68,6 +80,7 @@ def cross_validation_training():
 
     train_iteration_list = []
     eval_iteration_list = []
+
 
     num_epochs = 15
     for epoch in range(num_epochs):
@@ -87,6 +100,7 @@ def cross_validation_training():
             train_iteration_list.append(count_train)
 
             writer.add_scalar("Loss/Train", train_loss, count_train)
+            
             #print loss every 5 times
             if i%5 == 0:
                 print(f'{epoch}-{i}-train_loss====>>{train_loss.item()}')

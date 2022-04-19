@@ -22,7 +22,7 @@ def mask_threshold(prediction_path = PREDICTIONPATH):
 
     mask = cv2.imread(prediction_path, cv2.IMREAD_GRAYSCALE)
     h, w = mask.shape[0], mask.shape[1]
-    etVal, threshold = cv2.threshold(mask, 100, 255, cv2.THRESH_BINARY)
+    etVal, threshold = cv2.threshold(mask, 50, 255, cv2.THRESH_BINARY)
 
     kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (3, 3))
 
@@ -36,7 +36,7 @@ def mask_threshold(prediction_path = PREDICTIONPATH):
     valid = len(contours) > 0
 
     area = []
-
+    #find largest contour
     for k in range(len(contours)):
         area.append(cv2.contourArea(contours[k]))
     max_idx = np.argmax(np.array(area))

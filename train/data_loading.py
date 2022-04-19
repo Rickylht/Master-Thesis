@@ -15,7 +15,6 @@ from torch.utils.data import Dataset
 
 def get_path_list(path):
     list = []
-
     for root, ds, fs in os.walk(path):
         for f in fs:
             fullname = os.path.join(root, f)
@@ -23,30 +22,11 @@ def get_path_list(path):
     
     return list
             
-
 def AppendtoFrame():
-    
-    '''
-    connection = pymysql.connect(host = 'localhost', user = "root", password = '1989', db = 'decay_away', autocommit= True)
-    cursor = connection.cursor()
-    sql = 'select * from teeth '
-    try:
-        cursor.execute(sql)
-        results = cursor.fetchall()
-        for row in results:
-            id = row[0]
-            file_path = row[7]
-            list.append([id, '.\\data\\imgs\\{}'.format(file_path), '.\\data\\masks\\{}'.format(file_path)])
-    except:
-        print ("Error: unable to fetch data")
-    connection.close()
-
-    '''
-    
+      
     list = []
-    image_path_list = get_path_list(".\\teeth_dataset\\image\\830nm")
+    image_path_list = get_path_list(".\\teeth_dataset\\image\\horizontal\\830nm")
     for i in range(len(image_path_list)):
-        
         list.append([id, image_path_list[i], image_path_list[i].replace('image', 'mask')])
       
     frame = None

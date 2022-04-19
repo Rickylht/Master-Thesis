@@ -37,40 +37,40 @@ def create_mask(imgpath, jsonpath, maskpath):
     image = cv2.imread(imgpath)
     mask = np.zeros_like(image, dtype=np.uint8)
     for entry in jsondata['shapes']:
+
         if entry['label'] == 'tooth':
             tooth_point_list = entry['points']
             tooth_point_list = np.array(tooth_point_list, dtype=np.int32)
             cv2.fillPoly(mask, [tooth_point_list], (255,255,255))
+        
         if entry['label'] == 'decay':
             decay_point_list = entry['points']
             decay_point_list = np.array(decay_point_list, dtype=np.int32)
-            cv2.fillPoly(mask, [decay_point_list], (220,220,220))
+            cv2.fillPoly(mask, [decay_point_list], (255,255,255))
+            
         if entry['label'] == 'filling':
             filling_point_list = entry['points']
             filling_point_list = np.array(filling_point_list, dtype=np.int32)
-            cv2.fillPoly(mask, [filling_point_list], (192,192,192))
-        if entry['label'] == 'crack':
-            crack_point_list = entry['points']
-            #crack_point_list = np.array(crack_point_list, dtype=np.int32)
-            cv2.line(mask, (int(crack_point_list[0][0]), int(crack_point_list[0][1])), (int(crack_point_list[1][0]), int(crack_point_list[1][1])), (64,64,64), 3)
-        
+            cv2.fillPoly(mask, [filling_point_list], (255,255,255))
+
+    #RGB to Gray
+    mask = cv2.cvtColor(mask,cv2.COLOR_RGB2GRAY)
     cv2.imwrite(maskpath, mask)
-    #print('successful')
 
 
 def creat_all_mask():
     '''create masks for all images and save'''
-    img_list = get_path_list('.\\teeth_dataset\\image')
-    json_list = get_path_list('.\\teeth_dataset\\json')
+    img_list = get_path_list('.\\teeth_dataset\\image\\horizontal\\830nm')
+    json_list = get_path_list('.\\teeth_dataset\\json\\horizontal\\830nm')
 
     assert len(img_list) == len(json_list)
     for i in range(len(img_list)):
         create_mask(img_list[i], json_list[i], img_list[i].replace('image', 'mask'))
-    
+
 
 def mask_on_image(imgsrcpath, maskpath, maskedImgpath):
     '''
-    put single mask on single image
+    put mask on image
         Args:
             imgsrcpath: path of original img
             maskpath: path of mask
@@ -82,6 +82,15 @@ def mask_on_image(imgsrcpath, maskpath, maskedImgpath):
     maskImg = cv2.imread(maskpath, cv2.IMREAD_GRAYSCALE)
     maskedImg = cv2.bitwise_and(srcImg, srcImg, mask = maskImg)
     cv2.imwrite(maskedImgpath, maskedImg)
+
+def creat_all_masked():
+    img_list = get_path_list('.\\fusion_workplace\\source\\image')
+    mask_list = get_path_list('.\\fusion_workplace\\source\\mask')
+
+    assert len(img_list) == len(mask_list)
+    for i in range(len(img_list)):
+        mask_on_image(img_list[i], mask_list[i], img_list[i].replace('image', 'masked'))
+
 
 def visualize_mask(maskpath):
     '''visualize a mask'''
@@ -101,9 +110,8 @@ def prepocessing(rawpath, imgpath):
             rawpath: path of raw image
             imgpath: path of image to save
     '''
-    #change to grey sacle
+    #change to grey scale
     raw = cv2.imread(rawpath, cv2.IMREAD_GRAYSCALE)
-
 
     show_img(raw)
     cv2.imwrite(imgpath, raw)
@@ -127,8 +135,9 @@ def check_rgb(imgpath = "35x45_foto.jpg"):
 if __name__ == '__main__':
     #create_mask(".\\data\\imgs\\sample05.bmp", ".\\data\\jsons\\sample05.json", ".\\data\\masks\\sample05.bmp")
     #mask_on_image(".\\data\\imgs\\009_830_45.bmp", ".\\data\\masks\\009_830_45.bmp", ".\\data\\masked\\009_830_45.bmp")
-    #creat_all_mask()
+    creat_all_mask()
+    #creat_all_masked()
     #check_histogram('prediction_image\masked.bmp')
-    check_rgb()
+    #check_rgb()
     pass
     
