@@ -35,24 +35,30 @@ def create_mask(imgpath, jsonpath, maskpath):
         data = f.read()
     jsondata = json.loads(data)
     image = cv2.imread(imgpath)
-    mask = np.zeros_like(image, dtype=np.uint8)
-    for entry in jsondata['shapes']:
+    mask = np.zeros_like(image)
 
-        if entry['label'] == 'tooth':
+    for entry in jsondata['shapes']:
+        '''if entry['label'] == 'tooth':
             tooth_point_list = entry['points']
             tooth_point_list = np.array(tooth_point_list, dtype=np.int32)
-            cv2.fillPoly(mask, [tooth_point_list], (255,255,255))
+            cv2.fillPoly(mask, [tooth_point_list], (255,255,255))'''  
+        
         
         if entry['label'] == 'decay':
             decay_point_list = entry['points']
             decay_point_list = np.array(decay_point_list, dtype=np.int32)
             cv2.fillPoly(mask, [decay_point_list], (255,255,255))
-            
+        
+        if entry['label'] == 'crack':
+            decay_point_list = entry['points']
+            decay_point_list = np.array(decay_point_list, dtype=np.int32)
+            cv2.fillPoly(mask, [decay_point_list], (255,255,255))
+        
         if entry['label'] == 'filling':
-            filling_point_list = entry['points']
-            filling_point_list = np.array(filling_point_list, dtype=np.int32)
-            cv2.fillPoly(mask, [filling_point_list], (255,255,255))
-
+            decay_point_list = entry['points']
+            decay_point_list = np.array(decay_point_list, dtype=np.int32)
+            cv2.fillPoly(mask, [decay_point_list], (255,255,255))
+            
     #RGB to Gray
     mask = cv2.cvtColor(mask,cv2.COLOR_RGB2GRAY)
     cv2.imwrite(maskpath, mask)
@@ -60,8 +66,8 @@ def create_mask(imgpath, jsonpath, maskpath):
 
 def creat_all_mask():
     '''create masks for all images and save'''
-    img_list = get_path_list('.\\teeth_dataset\\image\\horizontal\\830nm')
-    json_list = get_path_list('.\\teeth_dataset\\json\\horizontal\\830nm')
+    img_list = get_path_list('.\\dummy_dataset\\image\\830nm')
+    json_list = get_path_list('.\\dummy_dataset\\json\\830nm')
 
     assert len(img_list) == len(json_list)
     for i in range(len(img_list)):
@@ -84,8 +90,8 @@ def mask_on_image(imgsrcpath, maskpath, maskedImgpath):
     cv2.imwrite(maskedImgpath, maskedImg)
 
 def creat_all_masked():
-    img_list = get_path_list('.\\fusion_workplace\\source\\image')
-    mask_list = get_path_list('.\\fusion_workplace\\source\\mask')
+    img_list = get_path_list('.\\teeth_dataset\\image\\horizontal\\830nm')
+    mask_list = get_path_list('.\\teeth_dataset\\mask\\horizontal\\830nm')
 
     assert len(img_list) == len(mask_list)
     for i in range(len(img_list)):
@@ -133,11 +139,17 @@ def check_rgb(imgpath = "35x45_foto.jpg"):
 
 
 if __name__ == '__main__':
-    #create_mask(".\\data\\imgs\\sample05.bmp", ".\\data\\jsons\\sample05.json", ".\\data\\masks\\sample05.bmp")
+    '''create_mask(".\\dummy2\\_image\\horizontal\\830nm\\gain_02\\natural\\002_wet_lingual.bmp", 
+                ".\\dummy_dataset\\json\\830nm\\gain_02\\010\\wet\\right.json", 
+                ".\\dummy2\\_mask\\horizontal\\830nm\\gain_02\\manual\\010_wet_right.bmp")'''
+    
     #mask_on_image(".\\data\\imgs\\009_830_45.bmp", ".\\data\\masks\\009_830_45.bmp", ".\\data\\masked\\009_830_45.bmp")
-    creat_all_mask()
+    #creat_all_mask()
     #creat_all_masked()
     #check_histogram('prediction_image\masked.bmp')
     #check_rgb()
+    #mask_on_image(".\\dummy2\\_image\\horizontal\\830nm\\gain_02\\natural\\002_wet_lingual.bmp",
+                    #".\\dummy2\\mask\\horizontal\\830nm\\gain_02\\002\\wet\\lingual.bmp", 
+                    #".\\dummy2\\_image\\horizontal\\830nm\\gain_02\\natural\\002_wet_lingual.bmp")
     pass
     

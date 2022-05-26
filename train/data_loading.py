@@ -6,9 +6,6 @@ import pandas as pd
 import json
 import os
 from torchvision import transforms, utils
-import time
-import math
-import pymysql
 from torch.utils.tensorboard import SummaryWriter
 from torchvision import transforms
 from torch.utils.data import Dataset
@@ -25,10 +22,21 @@ def get_path_list(path):
 def AppendtoFrame():
       
     list = []
-    image_path_list = get_path_list(".\\teeth_dataset\\image\\horizontal\\830nm")
-    for i in range(len(image_path_list)):
-        list.append([id, image_path_list[i], image_path_list[i].replace('image', 'mask')])
-      
+
+    #flag = 0 for contour segmentation, flag = 1 for caries estimation
+    #don`t forget to change in training_procedure.py 
+    
+    flag = 1
+
+    if flag == 0:
+        image_path_list = get_path_list(".\\teeth_dataset\\image\\horizontal\\830nm")
+        for i in range(len(image_path_list)):
+            list.append([id, image_path_list[i], image_path_list[i].replace('image', 'mask')])
+    else:
+        image_path_list = get_path_list(".\\dummy2\\_image\\horizontal\\830nm")
+        for i in range(len(image_path_list)):
+            list.append([id, image_path_list[i], image_path_list[i].replace('_image', '_mask')])
+
     frame = None
     frame = pd.DataFrame(list, columns = ['id', 'img_path', 'mask_path'])
     
@@ -63,7 +71,6 @@ class ToPILImage(object):
         return {'image': self.transform(image), 'mask': self.transform(mask)}
 
 class Normalize(object):
-    
     def __call__(self, sample):
         image, mask = sample['image'], sample['mask']
         
@@ -71,13 +78,8 @@ class Normalize(object):
         img_min = torch.min(image)
 
         img = (image - img_min)/(img_max - img_min)
-
-        msk_max = torch.max(mask)
-        msk_min = torch.min(mask)
-
-        msk = (mask - msk_min)/(msk_max - msk_min)
         
-        return {'image': img, 'mask': msk}
+        return {'image': img, 'mask': mask}
 
 class Rescale(object):
 
@@ -179,4 +181,5 @@ class ColorJitter(object):
     return {'image': image,  'mask': mask}
 
 if __name__ == '__main__':
-    get_path_list(".\\teeth_dataset\\image_2.23")
+    frame = AppendtoFrame()
+    print(frame.head(10))

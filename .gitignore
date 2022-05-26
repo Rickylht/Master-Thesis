@@ -1,5 +1,7 @@
-*.pth
+dummy2/
 teeth_dataset/
 data/
 fusion_workplace/source
-
+gui/
+tensorboard_eval/
+weights/

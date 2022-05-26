@@ -1,15 +1,11 @@
 from bisect import bisect_left
-import random
-import math
 import cv2
 import matplotlib.pyplot as plt
-from PIL import Image
 import numpy as np
-import shutil
 import time
 
-FUSIONPATH1 = '.\\fusion_workplace\\img1.bmp'
-FUSIONPATH2 = '.\\fusion_workplace\\img2.bmp'
+FUSIONPATH1 = '.\\fusion_workplace\\005h.bmp'
+FUSIONPATH2 = '.\\fusion_workplace\\005v.bmp'
 FUSIONRESULT_PATH = '.\\fusion_workplace\\fusion.bmp'
 
 def fusion_sift(imgpath1, imgpath2):
@@ -208,7 +204,7 @@ def four_image_fusion(imgpath_0, imgpath_30, imgpath_60, imgpath_90):
 if __name__ == '__main__':
     #fusion_sift(".\\data\\masked\\010_830_h.bmp", ".\\data\\masked\\010_830_v.bmp")
     
-    two_image_fusion(".\\fusion_workplace\\source\\masked\\002_h.bmp", ".\\fusion_workplace\\source\\masked\\002_v.bmp")
+    two_image_fusion(".\\fusion_workplace\\img1.bmp", ".\\fusion_workplace\\img2.bmp")
 
     #four_image_fusion(".\\fusion_workplace\\source\\masked\\005_0.bmp", ".\\fusion_workplace\\source\\masked\\005_30.bmp", ".\\fusion_workplace\\source\\masked\\005_60.bmp", ".\\fusion_workplace\\source\\masked\\005_90.bmp")
 

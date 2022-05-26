@@ -32,12 +32,3 @@ class UNet(nn.Module):
         x = self.up4(x, x1)
         logits = self.outc(x)
         return logits
-
-'''
-if __name__ == "__main__":
-    x = torch.randn(2,3,256,256)
-    # n_channels=3 for RGB images
-    # n_classes is the number of probabilities you want to get per pixel
-    net = UNet(n_channels = 3,n_classes = 2, bilinear = True)
-    print(net(x).shape)
-'''

@@ -7,7 +7,7 @@ from torchvision.utils import save_image
 from unet import UNet
 import numpy as np
 
-TESTPATH = '.\\data\\imgs\\002_h.bmp'
+TESTPATH = '.\\teeth_dataset\\image\\horizontal\\830nm\\gain_02\\003\\dry\\labial.bmp'
 
 def test_single_image(path = TESTPATH):
 
@@ -21,7 +21,13 @@ def test_single_image(path = TESTPATH):
 
     net = UNet(n_channels=1, n_classes=1).cuda()
     
-    weights = 'unet.pth'
+    # set 0 for contour segmentation, set 1 for caries estimation
+    flag = 0
+
+    if flag == 0:
+        weights = 'best_seg.pth'
+    else:
+        weights = 'best_caries.pth'    
 
     if os.path.exists(weights):
             net.load_state_dict(torch.load(weights))
@@ -71,7 +77,7 @@ def mask_threshold(prediction_path = PREDICTIONPATH):
 
     mask = cv2.imread(prediction_path, cv2.IMREAD_GRAYSCALE)
     h, w = mask.shape[0], mask.shape[1]
-    etVal, threshold = cv2.threshold(mask, 50, 255, cv2.THRESH_BINARY)
+    etVal, threshold = cv2.threshold(mask, 10, 255, cv2.THRESH_BINARY)
 
     kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (3, 3))
     eroded = cv2.erode(threshold, kernel)
