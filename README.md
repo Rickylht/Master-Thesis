@@ -4,6 +4,7 @@ Near-IR imaging and ML to estimate tooth & gum status
 ## Description
 This project is the master thesis of Huitong Lu in FAU.
 The repository includes all the contents about network training, image fusion and image processing functions.
+
 .\teeth_dataset is the dataset for all the 320 images, 80 annotation JSON files, corresponding masks and the spreadsheet
 
 .\dummy2 includes the dummy dataset.
@@ -21,6 +22,7 @@ network. 'prediction_threshold.bmp' is the result after manipulation. 'masked.bm
 
 
 You can either explore the code by yourself or use the functions listed below.
+
 
 ##Install
 1. [Install CUDA](https://developer.nvidia.com/cuda-downloads)
@@ -43,7 +45,9 @@ pip install -U scikit-learn
 ```
 Also, we recommend to install Anaconda for better package management and environment configuration.
 
+
 ##Usage
+
 **Note : Use Python 3.6 or newer**
 
 This project has three funtions.
