@@ -20,11 +20,9 @@ network. 'prediction_threshold.bmp' is the result after manipulation. 'masked.bm
 
 'best_seg.pth' is the best weight for contour segmentation.
 
-
 You can either explore the code by yourself or use the functions listed below.
 
-
-##Install
+## Install
 1. [Install CUDA](https://developer.nvidia.com/cuda-downloads)
 
 2. [Install PyTorch](https://pytorch.org/get-started/locally/)
@@ -45,14 +43,13 @@ pip install -U scikit-learn
 ```
 Also, we recommend to install Anaconda for better package management and environment configuration.
 
-
-##Usage
+## Usage
 
 **Note : Use Python 3.6 or newer**
 
 This project has three funtions.
 
-###contour segmentation and caries estimation
+### contour segmentation and caries estimation
 These two functions are integrated in predict.py.
 You need to change 'TESTPATH' for your desired image.
 And change 'FLAG' to decide whether contour segmentation and caries estimation.
