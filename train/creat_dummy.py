@@ -8,8 +8,7 @@ def get_path_list(path):
     for root, ds, fs in os.walk(path):
         for f in fs:
             fullname = os.path.join(root, f)
-            list.append(fullname)
-    
+            list.append(fullname)   
     return list
 
 def creat_dummy():
@@ -37,21 +36,12 @@ def creat_dummy():
         newmask = np.zeros_like(image)
         newmask = cv2.ellipse(newmask, center, axeslength, angle, startAngle, endAngle, (255,255,255), thickness)
         
-
-        '''cv2.imshow("img", maskedImg)
-        cv2.waitKey(0)
-        cv2.destroyAllWindows()
-        
-        cv2.imshow("img", newmask)
-        cv2.waitKey(0)
-        cv2.destroyAllWindows()
-        break'''
-        
         cv2.imwrite(path.replace('image', '_image'), maskedImg)
         cv2.imwrite(path.replace('image', '_mask'), newmask)
     
     print('creating dummy dataset finished')
     
 if __name__ == '__main__':
-    creat_dummy()
+    #creat_dummy()
     pass
+    

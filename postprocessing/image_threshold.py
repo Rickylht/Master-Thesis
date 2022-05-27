@@ -1,8 +1,5 @@
 import cv2
 import numpy as np
-import json
-import os
-import matplotlib.pyplot as plt
 
 IMGSRCPATH = '.\\prediction_workplace\\origin.bmp'
 MASKPATH = '.\\prediction_workplace\\prediction_threshold.bmp'

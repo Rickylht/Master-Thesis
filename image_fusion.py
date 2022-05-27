@@ -4,71 +4,19 @@ import matplotlib.pyplot as plt
 import numpy as np
 import time
 
+'''
+Change FUSIONPATH1 and FUSIONPATH2 to your desired fusion image paths
+You can also try with SIFT fusion and 4 image fusion. Change the corresponding image paths 
+'''
 FUSIONPATH1 = '.\\fusion_workplace\\005h.bmp'
 FUSIONPATH2 = '.\\fusion_workplace\\005v.bmp'
+
+
 FUSIONRESULT_PATH = '.\\fusion_workplace\\fusion.bmp'
 
-def fusion_sift(imgpath1, imgpath2):
-
-    MIN_MATCH_COUNT = 3
-
-    img1 = cv2.imread(imgpath1,0) # queryImage
-    img2 = cv2.imread(imgpath2,0) # trainImage
-
-    # Initiate SIFT detector
-    sift = cv2.SIFT_create()
-
-    # find the keypoints and descriptors with SIFT
-    kp1, des1 = sift.detectAndCompute(img1,None)
-    kp2, des2 = sift.detectAndCompute(img2,None)
-    
-    FLANN_INDEX_KDTREE = 1
-    index_params = dict(algorithm = FLANN_INDEX_KDTREE, trees = 5)
-    search_params = dict(checks = 100)
-    flann = cv2.FlannBasedMatcher(index_params, search_params)
-    matches = flann.knnMatch(des1,des2,k=2)
-    
-    # store all the good matches as per Lowe's ratio test.
-    good = []
-    for m,n in matches:
-        if m.distance < 0.8 * n.distance:
-            good.append(m)
-    
-    if len(good)>MIN_MATCH_COUNT:
-        src_pts = np.float32([ kp1[m.queryIdx].pt for m in good ]).reshape(-1,1,2)
-        dst_pts = np.float32([ kp2[m.trainIdx].pt for m in good ]).reshape(-1,1,2)
-
-        M, mask = cv2.findHomography(src_pts, dst_pts, cv2.RANSAC)
-        matchesMask = mask.ravel().tolist() 
-        print(M)
-        print(matchesMask)
-
-        draw_params = dict(matchColor = (0,255,0), # draw matches in green color
-                    singlePointColor = None,
-                    matchesMask = matchesMask, # draw only inliers
-                    flags = 2) 
-
-        img3 = cv2.drawMatches(img1, kp1, img2, kp2, good, None, **draw_params)
-        plt.imshow(img3, 'gray'),plt.show()
-
-        #draw image frame
-        h,w = img1.shape
-        pts = np.float32([ [0,0],[0,h-1],[w-1,h-1],[w-1,0] ]).reshape(-1,1,2)
-        dst = cv2.perspectiveTransform(pts,M)
-        img2 = cv2.polylines(img2,[np.int32(dst)],True,255,3, cv2.LINE_AA)
-
-        _img1 = cv2.warpPerspective(img1,M, (w,h))
-        added_image = cv2.addWeighted(img2, 0.5, _img1, 0.5, 0)
-        plt.imshow(added_image, 'gray'),plt.show()
-
-    else:
-        print("Not enough matches are found - %d/%d" % (len(good),MIN_MATCH_COUNT))
-        matchesMask = None
-        return
-
-def fusion_contour(img1, img2):
+def fusion_templatematching(img1, img2):
     '''
-        use template matching to find best overlay and do image fusion
+        template matching to find best overlay and do image fusion
     '''
 
     assert img1.shape == img2.shape
@@ -129,8 +77,6 @@ def fusion_contour(img1, img2):
     resized = cv2.resize(masked_1, best_dim, interpolation = cv2.INTER_AREA)
     M = cv2.getRotationMatrix2D((cX, cY), best_degree, 1.0)
     best_template = cv2.warpAffine(resized, M, (w, h))
-    #plt.imshow(best_template, 'gray'),plt.show()
-    
 
     def overlay(largeImg, smallImg, regionTopLeftPos = (0,0)):
         srcW, srcH = largeImg.shape[1::-1]
@@ -171,8 +117,69 @@ def two_image_fusion(imgpath1, imgpath2):
 
     img1 = cv2.imread(imgpath1, cv2.IMREAD_GRAYSCALE)
     img2 = cv2.imread(imgpath2, cv2.IMREAD_GRAYSCALE)
-    fusion_contour(img1, img2)
+    fusion_templatematching(img1, img2)
 
+
+#bad fusion method: SIFT
+def fusion_sift(imgpath1, imgpath2):
+
+    MIN_MATCH_COUNT = 3
+
+    img1 = cv2.imread(imgpath1,0) # queryImage
+    img2 = cv2.imread(imgpath2,0) # trainImage
+
+    # Initiate SIFT detector
+    sift = cv2.SIFT_create()
+
+    # find the keypoints and descriptors with SIFT
+    kp1, des1 = sift.detectAndCompute(img1,None)
+    kp2, des2 = sift.detectAndCompute(img2,None)
+    
+    FLANN_INDEX_KDTREE = 1
+    index_params = dict(algorithm = FLANN_INDEX_KDTREE, trees = 5)
+    search_params = dict(checks = 100)
+    flann = cv2.FlannBasedMatcher(index_params, search_params)
+    matches = flann.knnMatch(des1,des2,k=2)
+    
+    # store all the good matches as per Lowe's ratio test.
+    good = []
+    for m,n in matches:
+        if m.distance < 0.8 * n.distance:
+            good.append(m)
+    
+    if len(good)>MIN_MATCH_COUNT:
+        src_pts = np.float32([ kp1[m.queryIdx].pt for m in good ]).reshape(-1,1,2)
+        dst_pts = np.float32([ kp2[m.trainIdx].pt for m in good ]).reshape(-1,1,2)
+
+        M, mask = cv2.findHomography(src_pts, dst_pts, cv2.RANSAC)
+        matchesMask = mask.ravel().tolist() 
+        print(M)
+        print(matchesMask)
+
+        draw_params = dict(matchColor = (0,255,0), # draw matches in green color
+                    singlePointColor = None,
+                    matchesMask = matchesMask, # draw only inliers
+                    flags = 2) 
+
+        img3 = cv2.drawMatches(img1, kp1, img2, kp2, good, None, **draw_params)
+        plt.imshow(img3, 'gray'),plt.show()
+
+        #draw image frame
+        h,w = img1.shape
+        pts = np.float32([ [0,0],[0,h-1],[w-1,h-1],[w-1,0] ]).reshape(-1,1,2)
+        dst = cv2.perspectiveTransform(pts,M)
+        img2 = cv2.polylines(img2,[np.int32(dst)],True,255,3, cv2.LINE_AA)
+
+        _img1 = cv2.warpPerspective(img1,M, (w,h))
+        added_image = cv2.addWeighted(img2, 0.5, _img1, 0.5, 0)
+        plt.imshow(added_image, 'gray'),plt.show()
+
+    else:
+        print("Not enough matches are found - %d/%d" % (len(good),MIN_MATCH_COUNT))
+        matchesMask = None
+        return
+
+#bad fusion method: four images fusion
 def four_image_fusion(imgpath_0, imgpath_30, imgpath_60, imgpath_90):
     
     img0 = cv2.imread(imgpath_0, cv2.IMREAD_GRAYSCALE)
@@ -194,18 +201,15 @@ def four_image_fusion(imgpath_0, imgpath_30, imgpath_60, imgpath_90):
     M_90 = cv2.getRotationMatrix2D((cX, cY), -90, 1.0)
     img90 = cv2.warpAffine(img90, M_90, (w, h))
 
-    tmp_img1 = fusion_contour(img0, img60)
-    tmp_img2 = fusion_contour(img30, img90)
-    tmp_img3 = fusion_contour(tmp_img1, tmp_img2)
+    tmp_img1 = fusion_templatematching(img0, img60)
+    tmp_img2 = fusion_templatematching(img30, img90)
+    tmp_img3 = fusion_templatematching(tmp_img1, tmp_img2)
 
     cv2.imwrite(FUSIONRESULT_PATH, tmp_img3)
     
 
 if __name__ == '__main__':
+    two_image_fusion(FUSIONPATH1, FUSIONPATH2)
     #fusion_sift(".\\data\\masked\\010_830_h.bmp", ".\\data\\masked\\010_830_v.bmp")
-    
-    two_image_fusion(".\\fusion_workplace\\img1.bmp", ".\\fusion_workplace\\img2.bmp")
-
     #four_image_fusion(".\\fusion_workplace\\source\\masked\\005_0.bmp", ".\\fusion_workplace\\source\\masked\\005_30.bmp", ".\\fusion_workplace\\source\\masked\\005_60.bmp", ".\\fusion_workplace\\source\\masked\\005_90.bmp")
-
     pass

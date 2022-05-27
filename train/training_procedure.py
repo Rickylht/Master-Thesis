@@ -17,11 +17,9 @@ from torchvision import transforms
 flag = 1
 
 if flag == 0:
-    writer = SummaryWriter('.\\tensorboard_eval\\seg_log')
     weight_path = '.\\weights\\seg_unet{}.pth'
     save_path = '.\\data\\seg_save_image'
 else:
-    writer = SummaryWriter('.\\tensorboard_eval\\caries_log')
     weight_path = '.\\weights\\caries_unet{}.pth'
     save_path = '.\\data\\caries_save_image'
 
@@ -117,8 +115,6 @@ def cross_validation_training():
                 count_train += 1
                 train_loss_list.append(train_loss.data)
                 train_iteration_list.append(count_train)
-
-                writer.add_scalar("Loss/Train", train_loss, count_train)
             
                 #print loss every 5 times
                 if i%5 == 0:
@@ -133,7 +129,6 @@ def cross_validation_training():
                             val_loss_list.append(val_loss.data)
                         count_val += 1
                         val_iteration_list.append(count_val)
-                        writer.add_scalar("Loss/Validation", val_loss, count_val)
                     net.train()
     
         torch.save(net.state_dict(), weight_path.format(n))

@@ -4,10 +4,18 @@ import torch
 import cv2
 from torchvision import transforms
 from torchvision.utils import save_image
-from unet import UNet
+from train.unet import UNet
 import numpy as np
 
-TESTPATH = '.\\teeth_dataset\\image\\horizontal\\830nm\\gain_02\\003\\dry\\labial.bmp'
+'''
+Change TESTPATH to your desired image path.
+Change FLAG to your desired prediction method. FLAG = 0 for contour segmentation, FLAG = 1 for caries estimation.
+
+'''
+
+#TESTPATH = '.\\teeth_dataset\\image\\horizontal\\830nm\\gain_02\\001\\dry\\labial.bmp'
+TESTPATH = '.\\dummy2\\_image\\horizontal\\830nm\\gain_02\\manual\\001_dry_labial.bmp'
+FLAG = 1
 
 def test_single_image(path = TESTPATH):
 
@@ -21,10 +29,7 @@ def test_single_image(path = TESTPATH):
 
     net = UNet(n_channels=1, n_classes=1).cuda()
     
-    # set 0 for contour segmentation, set 1 for caries estimation
-    flag = 0
-
-    if flag == 0:
+    if FLAG == 0:
         weights = 'best_seg.pth'
     else:
         weights = 'best_caries.pth'    
@@ -72,7 +77,6 @@ def mask_on_image(imgsrcpath, maskpath, maskedImgpath):
     maskedImg = cv2.bitwise_and(srcImg, srcImg, mask = maskImg)
     cv2.imwrite(maskedImgpath, maskedImg)
 
-
 def mask_threshold(prediction_path = PREDICTIONPATH):
 
     mask = cv2.imread(prediction_path, cv2.IMREAD_GRAYSCALE)
@@ -87,13 +91,17 @@ def mask_threshold(prediction_path = PREDICTIONPATH):
     assert len(contours) > 0
 
     area = []
-    #find largest contour
-    for k in range(len(contours)):
-        area.append(cv2.contourArea(contours[k]))
-    max_idx = np.argmax(np.array(area))
-
     black = np.zeros((h, w))
-    mask = cv2.drawContours(black, contours, max_idx, 255, cv2.FILLED)
+    
+    if FLAG == 0:
+        #find largest contour
+        for k in range(len(contours)):
+            area.append(cv2.contourArea(contours[k]))
+        max_idx = np.argmax(np.array(area))
+        mask = cv2.drawContours(black, contours, max_idx, 255, cv2.FILLED)
+    elif FLAG == 1:
+        #draw all the contour
+        mask = cv2.drawContours(black, contours, -1,  255, cv2.FILLED)
 
     cv2.namedWindow("mask",0)
     cv2.imshow("mask", mask)
@@ -107,7 +115,9 @@ def mask_threshold(prediction_path = PREDICTIONPATH):
     cv2.waitKey(0)
     cv2.destroyAllWindows()
 
+    return
 
 if __name__ == '__main__':
     test_single_image()
     mask_threshold()
+    
