@@ -22,6 +22,8 @@ network. 'prediction_threshold.bmp' is the result after manipulation. 'masked.bm
 
 You can either explore the code by yourself or use the functions listed below.
 
+**Note : Some documents are hidden for confidentiality reason.**
+
 ## Install
 1. [Install CUDA](https://developer.nvidia.com/cuda-downloads)
 
@@ -49,7 +51,7 @@ Also, we recommend to install Anaconda for better package management and environ
 
 This project has three funtions.
 
-### contour segmentation and caries estimation
+### Contour Segmentation and Caries Estimation
 These two functions are integrated in predict.py.
 You need to change 'TESTPATH' for your desired image.
 And change 'FLAG' to decide whether contour segmentation and caries estimation.
@@ -58,7 +60,7 @@ Then run predict.py
 python predict.py
 ```
 You can get the result in .\prediction_workplace
-### image fusion
+### Image Fusion
 You need to change 'FUSIONPATH1' and 'FUSIONPATH2' in the code for your desired two images.
 Then run image_fusion.py
 ```bash
