@@ -3,9 +3,10 @@ Near-IR imaging and ML to estimate tooth & gum status
 
 ## Description
 This project is the master thesis of Huitong Lu at FAU.
-The repository includes all the contents about network training, image fusion and image processing functions.
 
-.\teeth_dataset is the dataset for all the 320 images, 80 annotation JSON files, corresponding masks and the spreadsheet
+The repository includes all the contents about NIR images, network training, image fusion and image processing functions.
+
+.\teeth_dataset is the NIR dataset for all the 320 images + some new molar samples, 80 annotation JSON files, corresponding masks and the spreadsheet
 
 .\dummy2 includes the dummy dataset.
 
@@ -18,13 +19,12 @@ the network. 'prediction_threshold.bmp' is the result after manipulation. 'maske
 
 'best_seg.pth' is the best weights for contour segmentation.
 
-.\train includes all the python files of training. 
-The structure of Unet is in .\unet. The CV implementation is in 'training_procedure.py'
-The IoU test is in 'iou.py'
+.\train includes all the python files of training and evaluation. 
+The structure of Unet is in .\unet. The CV implementation is in 'training_procedure.py'. The IoU test is in 'iou.py'.
 
 You can either explore the code by yourself or use the functions listed below.
 
-**Note: Some documents are hidden for confidentiality reasons.**
+**Note: Some documents are hidden for confidentiality reasons. **
 
 ## Install
 1. [Install CUDA](https://developer.nvidia.com/cuda-downloads)
@@ -61,7 +61,7 @@ Then run predict.py
 ```bash
 python predict.py
 ```
-You can get the result in .\prediction_workplace
+You can get the results in .\prediction_workplace
 ### Image Fusion
 You need to change the constants 'FUSIONPATH1' and 'FUSIONPATH2' in the code to your desired two images.
 Then run 'image_fusion.py'
