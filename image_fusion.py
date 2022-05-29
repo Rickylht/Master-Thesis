@@ -5,12 +5,11 @@ import numpy as np
 import time
 
 '''
-Change FUSIONPATH1 and FUSIONPATH2 to your desired fusion image paths
+Change the constants 'FUSIONPATH1' and 'FUSIONPATH2' to your desired fusion image paths
 You can also try with SIFT fusion and 4 image fusion. Change the corresponding image paths 
 '''
 FUSIONPATH1 = '.\\fusion_workplace\\005h.bmp'
 FUSIONPATH2 = '.\\fusion_workplace\\005v.bmp'
-
 
 FUSIONRESULT_PATH = '.\\fusion_workplace\\fusion.bmp'
 
@@ -120,7 +119,7 @@ def two_image_fusion(imgpath1, imgpath2):
     fusion_templatematching(img1, img2)
 
 
-#bad fusion method: SIFT
+# Bad fusion method: SIFT
 def fusion_sift(imgpath1, imgpath2):
 
     MIN_MATCH_COUNT = 3
@@ -179,7 +178,7 @@ def fusion_sift(imgpath1, imgpath2):
         matchesMask = None
         return
 
-#bad fusion method: four images fusion
+# Bad fusion method: four images fusion
 def four_image_fusion(imgpath_0, imgpath_30, imgpath_60, imgpath_90):
     
     img0 = cv2.imread(imgpath_0, cv2.IMREAD_GRAYSCALE)

@@ -21,8 +21,8 @@ def AppendtoFrame():
       
     list = []
 
-    #flag = 0 for contour segmentation, flag = 1 for caries estimation
-    #don`t forget to change in training_procedure.py 
+    # Set flag = 0 for contour segmentation, flag = 1 for caries estimation
+    # Don`t forget to change in 'training_procedure.py' 
     
     flag = 1
 
@@ -179,5 +179,4 @@ class ColorJitter(object):
     return {'image': image,  'mask': mask}
 
 if __name__ == '__main__':
-    frame = AppendtoFrame()
-    print(frame.head(10))
+    pass

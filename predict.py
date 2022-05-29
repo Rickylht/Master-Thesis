@@ -8,8 +8,8 @@ from train.unet import UNet
 import numpy as np
 
 '''
-Change TESTPATH to your desired image path.
-Change FLAG to your desired prediction method. FLAG = 0 for contour segmentation, FLAG = 1 for caries estimation.
+Change the constant 'TESTPATH' to your desired image path.
+Change the constant 'FLAG' to your desired prediction method. FLAG = 0 for contour segmentation, FLAG = 1 for caries estimation.
 
 '''
 
@@ -100,7 +100,7 @@ def mask_threshold(prediction_path = PREDICTIONPATH):
         max_idx = np.argmax(np.array(area))
         mask = cv2.drawContours(black, contours, max_idx, 255, cv2.FILLED)
     elif FLAG == 1:
-        #draw all the contour
+        #draw all the contours
         mask = cv2.drawContours(black, contours, -1,  255, cv2.FILLED)
 
     cv2.namedWindow("mask",0)

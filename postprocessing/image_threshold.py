@@ -1,6 +1,8 @@
 import cv2
 import numpy as np
 
+# This is the script to get the largest contour of the prediction result and put it on the input image
+
 IMGSRCPATH = '.\\prediction_workplace\\origin.bmp'
 MASKPATH = '.\\prediction_workplace\\prediction_threshold.bmp'
 MASKEDIMGPATH = '.\\prediction_workplace\\masked.bmp'
@@ -54,5 +56,6 @@ def mask_threshold(prediction_path = PREDICTIONPATH):
     cv2.destroyAllWindows()
 
 if __name__ == '__main__':
-    mask_threshold()
+    #mask_threshold()
+    pass
 

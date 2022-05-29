@@ -3,8 +3,9 @@ import numpy as np
 import json
 import os
 import matplotlib.pyplot as plt
-from PIL import Image
 
+# Other utility functions
+ 
 def show_img(img):
     
     cv2.imshow("img", img)
@@ -37,12 +38,12 @@ def create_mask(imgpath, jsonpath, maskpath):
     image = cv2.imread(imgpath)
     mask = np.zeros_like(image)
 
+    #change the label options here
     for entry in jsondata['shapes']:
-        '''if entry['label'] == 'tooth':
+        if entry['label'] == 'tooth':
             tooth_point_list = entry['points']
             tooth_point_list = np.array(tooth_point_list, dtype=np.int32)
-            cv2.fillPoly(mask, [tooth_point_list], (255,255,255))'''  
-        
+            cv2.fillPoly(mask, [tooth_point_list], (255,255,255))  
         
         if entry['label'] == 'decay':
             decay_point_list = entry['points']
@@ -139,17 +140,12 @@ def check_rgb(imgpath = "35x45_foto.jpg"):
 
 
 if __name__ == '__main__':
-    '''create_mask(".\\dummy2\\_image\\horizontal\\830nm\\gain_02\\natural\\002_wet_lingual.bmp", 
-                ".\\dummy_dataset\\json\\830nm\\gain_02\\010\\wet\\right.json", 
-                ".\\dummy2\\_mask\\horizontal\\830nm\\gain_02\\manual\\010_wet_right.bmp")'''
-    
+    #create_mask(".\\dummy2\\_image\\horizontal\\830nm\\gain_02\\natural\\002_wet_lingual.bmp", ".\\dummy_dataset\\json\\830nm\\gain_02\\010\\wet\\right.json", ".\\dummy2\\_mask\\horizontal\\830nm\\gain_02\\manual\\010_wet_right.bmp")  
     #mask_on_image(".\\data\\imgs\\009_830_45.bmp", ".\\data\\masks\\009_830_45.bmp", ".\\data\\masked\\009_830_45.bmp")
     #creat_all_mask()
     #creat_all_masked()
     #check_histogram('prediction_image\masked.bmp')
     #check_rgb()
-    #mask_on_image(".\\dummy2\\_image\\horizontal\\830nm\\gain_02\\natural\\002_wet_lingual.bmp",
-                    #".\\dummy2\\mask\\horizontal\\830nm\\gain_02\\002\\wet\\lingual.bmp", 
-                    #".\\dummy2\\_image\\horizontal\\830nm\\gain_02\\natural\\002_wet_lingual.bmp")
+    #mask_on_image(".\\dummy2\\_image\\horizontal\\830nm\\gain_02\\natural\\002_wet_lingual.bmp", ".\\dummy2\\mask\\horizontal\\830nm\\gain_02\\002\\wet\\lingual.bmp", ".\\dummy2\\_image\\horizontal\\830nm\\gain_02\\natural\\002_wet_lingual.bmp")                   
     pass
     

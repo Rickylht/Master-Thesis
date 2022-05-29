@@ -1,6 +1,8 @@
 import cv2
 import numpy as np
 
+# This is to change the image brightness and contrast
+
 alpha = 0.3
 beta = 80
 img_path = ".\\data\\masked\\002_v.bmp"

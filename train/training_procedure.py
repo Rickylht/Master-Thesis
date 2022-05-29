@@ -12,8 +12,8 @@ from torch.utils.tensorboard import SummaryWriter
 import time
 from torchvision import transforms
 
-# set 0 if contour segmentation, set 1 if caries estimation
-# don`t forget to change in data_loading.py
+# Set flag = 0 for contour segmentation, flag = 1 for caries estimation
+# Don`t forget to change it in 'data_loading.py'
 flag = 1
 
 if flag == 0:
@@ -22,7 +22,6 @@ if flag == 0:
 else:
     weight_path = '.\\weights\\caries_unet{}.pth'
     save_path = '.\\data\\caries_save_image'
-
 
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 frame = None
@@ -99,7 +98,7 @@ def cross_validation_training():
         train_loss_list = []
         val_loss_list = []
 
-        num_epochs = 5
+        num_epochs = 5 #only for test
         for epoch in range(num_epochs):
             net.train()
             for i, sample in enumerate(dataloader_train):
@@ -225,5 +224,5 @@ def train_best():
     
 if __name__ == '__main__':
     #cross_validation_training()
-    train_best()
+    #train_best()
     pass

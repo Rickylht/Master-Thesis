@@ -2,7 +2,7 @@
 Near-IR imaging and ML to estimate tooth & gum status
 
 ## Description
-This project is the master thesis of Huitong Lu in FAU.
+This project is the master thesis of Huitong Lu at FAU.
 The repository includes all the contents about network training, image fusion and image processing functions.
 
 .\teeth_dataset is the dataset for all the 320 images, 80 annotation JSON files, corresponding masks and the spreadsheet
@@ -11,18 +11,20 @@ The repository includes all the contents about network training, image fusion an
 
 .\fusion_workplace is the workplace for image fusion. You can get the fusion result here with the name 'fusion.bmp'.
 
-.\prediction_workplace is the workplace for CNN prediction. 'origin.bmp' is the input image. 'prediction.bmp' is the direct result from
-network. 'prediction_threshold.bmp' is the result after manipulation. 'masked.bmp' is the image with a mask. 
+.\prediction_workplace is the workplace for CNN prediction. 'origin.bmp' is the input image. 'prediction.bmp' is the direct prediction result from
+the network. 'prediction_threshold.bmp' is the result after manipulation. 'masked.bmp' is the image with a mask. 
 
-.\train includes all the python files of training. The structure of Unet is in .\unet.
+'best_caries.pth' is the best weights for caries estimation.
 
-'best_caries.pth' is the best weight for caries estimation.
+'best_seg.pth' is the best weights for contour segmentation.
 
-'best_seg.pth' is the best weight for contour segmentation.
+.\train includes all the python files of training. 
+The structure of Unet is in .\unet. The CV implementation is in 'training_procedure.py'
+The IoU test is in 'iou.py'
 
 You can either explore the code by yourself or use the functions listed below.
 
-**Note : Some documents are hidden for confidentiality reason.**
+**Note: Some documents are hidden for confidentiality reasons.**
 
 ## Install
 1. [Install CUDA](https://developer.nvidia.com/cuda-downloads)
@@ -43,29 +45,29 @@ pip install pandas
 ```bash
 pip install -U scikit-learn
 ```
-Also, we recommend to install Anaconda for better package management and environment configuration.
+Also, we recommend installing Anaconda for better package management and environment configuration.
 
 ## Usage
 
-**Note : Use Python 3.6 or newer**
+**Note: Please use Python 3.7 or newer**
 
-This project has three funtions.
+This project has three functions.
 
 ### Contour Segmentation and Caries Estimation
-These two functions are integrated in predict.py.
-You need to change 'TESTPATH' for your desired image.
-And change 'FLAG' to decide whether contour segmentation and caries estimation.
+These two functions are integrated in 'predict.py'.
+You need to change the constant 'TESTPATH' to your desired image.
+And change the constant 'FLAG' to decide whether to use contour segmentation or caries estimation.
 Then run predict.py
 ```bash
 python predict.py
 ```
 You can get the result in .\prediction_workplace
 ### Image Fusion
-You need to change 'FUSIONPATH1' and 'FUSIONPATH2' in the code for your desired two images.
-Then run image_fusion.py
+You need to change the constants 'FUSIONPATH1' and 'FUSIONPATH2' in the code to your desired two images.
+Then run 'image_fusion.py'
 ```bash
 python image_fusion.py
 ```
-You can get the result in .\fusion_workplace
+You can get the results in .\fusion_workplace
 
 

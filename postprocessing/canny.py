@@ -1,5 +1,7 @@
 import cv2
 
+# This is to get Canny edge detector results
+
 img_original=cv2.imread('.\\data\\masked\\005_v.bmp')
 
 cv2.namedWindow('Canny')

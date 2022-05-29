@@ -10,7 +10,7 @@ frame = None
 frame = AppendtoFrame()
 
 def compute_iou():
-    '''check IoU of model'''
+    # IoU test of the model
 
     weights = 'best_caries.pth'
     net = UNet(n_channels=1, n_classes=1).cuda()
@@ -23,11 +23,10 @@ def compute_iou():
 
     transform = transforms.Compose([transforms.ToPILImage(), transforms.Resize((400, 500)), transforms.ToTensor()])
 
-
+    #change interval for desired images
     test = frame.loc[0:82]
     img_path_list = test['img_path']
     mask_path_list = test['mask_path']
-
 
     avg_iou = 0
 
@@ -85,6 +84,8 @@ def compute_iou():
     plt.show()
 
 def get_stackbarchart():
+    # Draw stack bar
+
     X = ['All data','Generated','Drawn','Natural']
     bad = np.array([6,5,1,0])
     low = np.array([13,9,2,2])
@@ -103,4 +104,5 @@ def get_stackbarchart():
 
 if __name__ == '__main__':
     #compute_iou()
-    get_stackbarchart()
+    #get_stackbarchart()
+    pass
